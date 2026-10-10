@@ -528,33 +528,24 @@ body {
   color: #fbbf24;
 }
 
-/* The Next Immediate Action Box (Siguiente Acción Inmediata) */
-.immediate-action-box {
-  background: #0d1424;
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  border-radius: var(--radius-md);
-  padding: 14px 14px;
-  margin-bottom: 16px;
-  position: relative;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+/* Tasks Section in Active Slot Card */
+.tasks-progress-container {
+  margin-bottom: 12px;
 }
 
-.action-box-label {
+.tasks-progress-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
-.action-box-title {
-  font-size: 0.68rem;
+.tasks-progress-label {
+  font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--accent-cyan);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  color: var(--text-secondary);
 }
 
 .action-count-pill {
@@ -563,10 +554,121 @@ body {
   color: var(--text-muted);
 }
 
-.immediate-action-item {
+.tasks-progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.tasks-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8 0%, #10b981 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-tasks-list {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.project-task-item {
+  background: #0d1424;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.project-task-item:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.project-task-item.immediate-focus-task {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, #0d1424 100%);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.08);
+}
+
+.task-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.immediate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-cyan);
+}
+
+.immediate-badge svg {
+  width: 11px;
+  height: 11px;
+}
+
+.task-text-content {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.task-text-content.task-completed-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.task-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.project-task-item:hover .task-actions-group {
+  opacity: 1;
+}
+
+.task-mini-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.task-mini-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.task-mini-btn.delete:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
 }
 
 /* Custom Tactile Checkbox */
@@ -597,45 +699,110 @@ body {
   color: #fff;
 }
 
-.action-text {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #f1f5f9;
-  line-height: 1.4;
-  flex: 1;
-}
-
-.action-text.completed {
-  text-decoration: line-through;
-  color: var(--text-muted);
-}
-
-.no-action-state {
+/* Inline Edit Mode */
+.task-inline-edit-form {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  color: var(--text-secondary);
-  font-size: 0.85rem;
+  gap: 6px;
+  width: 100%;
 }
 
-.btn-inline-add {
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  color: var(--accent-cyan);
-  font-size: 0.76rem;
-  font-weight: 700;
-  padding: 6px 10px;
+.inline-edit-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-input);
+  border: 1px solid var(--accent-cyan);
   border-radius: var(--radius-sm);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  padding: 6px 10px;
+  font-size: 0.86rem;
+  color: #fff;
+  font-family: inherit;
+  outline: none;
+}
+
+.btn-inline-save {
+  background: #10b981;
+  color: #064e3b;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 6px 10px;
   cursor: pointer;
+}
+
+.btn-inline-cancel {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+/* Frictionless Inline Add Task Form */
+.inline-add-task-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.inline-task-input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(12, 18, 32, 0.7);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 0.86rem;
+  color: #fff;
+  font-family: inherit;
+  outline: none;
   transition: all 0.2s;
 }
 
-.btn-inline-add:hover {
-  background: rgba(56, 189, 248, 0.22);
+.inline-task-input:focus {
+  border-style: solid;
+  border-color: var(--accent-cyan);
+  background: var(--bg-input);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+.inline-task-input::placeholder {
+  color: var(--text-muted);
+}
+
+.btn-inline-task-submit {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: var(--radius-md);
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--accent-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-inline-task-submit:hover {
+  background: #38bdf8;
+  color: #090d16;
+}
+
+.project-desc-preview {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Primary Card Actions Buttons */

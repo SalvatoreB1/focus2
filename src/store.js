@@ -398,11 +398,35 @@ class Store {
     return newAction;
   }
 
+  updateNextAction(projectId, actionId, newText) {
+    if (!newText || !newText.trim()) return null;
+    const project = this.getProjectById(projectId);
+    if (!project || !Array.isArray(project.nextActions)) return null;
+    const action = project.nextActions.find((a) => a.id === actionId);
+    if (!action) return null;
+    action.text = newText.trim();
+    this.notify();
+    return action;
+  }
+
   deleteNextAction(projectId, actionId) {
     const project = this.getProjectById(projectId);
     if (!project) return;
     project.nextActions = project.nextActions.filter((a) => a.id !== actionId);
     this.notify();
+  }
+
+  swapProjects(activeProjectIdToFreeze, frozenProjectIdToActivate) {
+    const toFreeze = this.getProjectById(activeProjectIdToFreeze);
+    const toActivate = this.getProjectById(frozenProjectIdToActivate);
+    if (!toFreeze || !toActivate) return { success: false, error: 'Proyectos no encontrados' };
+
+    toFreeze.status = 'frozen';
+    toActivate.status = 'active';
+    toActivate.activatedAt = new Date().toISOString();
+    sounds.playClick();
+    this.notify();
+    return { success: true };
   }
 
   // --- Macro Goals Management ---

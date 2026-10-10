@@ -6,11 +6,12 @@ import { showToast } from './Toast.js';
 
 let pendingActionCallback = null;
 
-export function openWipLimitModal(onResolved = null) {
+export function openWipLimitModal(onResolved = null, projectToActivateId = null) {
   pendingActionCallback = onResolved;
   sounds.playWarning();
 
   const activeProjects = store.getActiveProjects();
+  const targetProject = projectToActivateId ? store.getProjectById(projectToActivateId) : null;
 
   const backdrop = document.getElementById('wip-modal-backdrop');
   if (!backdrop) return;
@@ -21,7 +22,9 @@ export function openWipLimitModal(onResolved = null) {
   let activeProjectsHtml = '';
   if (activeProjects.length > 0) {
     activeProjectsHtml = `
-      <div class="wip-current-active-label">Proyectos que ocupan tus 2 slots de foco:</div>
+      <div class="wip-current-active-label">
+        ${targetProject ? `Elige cuál pausar para activar "${targetProject.title}":` : 'Proyectos que ocupan tus 2 slots de foco:'}
+      </div>
       <div class="wip-active-resolutions">
         ${activeProjects
           .map((p, idx) => {
@@ -36,7 +39,7 @@ export function openWipLimitModal(onResolved = null) {
               </div>
               <div style="display:flex; gap:6px;">
                 <button class="btn-pause-wip" data-action="pause-wip" data-project-id="${p.id}" title="Pausar y enviar al Freezer">
-                  ${icons.snowflake} Pausar
+                  ${icons.snowflake} ${targetProject ? 'Pausar e intercambiar' : 'Pausar'}
                 </button>
               </div>
             </div>
@@ -55,9 +58,9 @@ export function openWipLimitModal(onResolved = null) {
     </div>
     
     <div class="wip-alert-header">
-      <h2 class="wip-alert-title">Límite de WIP Alcanzado</h2>
+      <h2 class="wip-alert-title">Límite de WIP (Máximo 2 Focos)</h2>
       <div class="wip-alert-message">
-        Límite de WIP alcanzado (máximo 2 proyectos activos). Debes completar o pausar uno antes de iniciar otro.
+        Para mantener tu concentración profunda, no puedes tener más de 2 proyectos activos a la vez.
       </div>
     </div>
 
@@ -65,7 +68,7 @@ export function openWipLimitModal(onResolved = null) {
 
     <div class="form-actions" style="justify-content:center; margin-top:8px;">
       <button class="btn-cancel" id="btn-close-wip-modal" style="width:100%; text-align:center;">
-        Entendido, mantener foco actual
+        Cancelar, mantener foco actual
       </button>
     </div>
   `;
@@ -74,8 +77,13 @@ export function openWipLimitModal(onResolved = null) {
   content.querySelectorAll('[data-action="pause-wip"]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const pid = e.currentTarget.getAttribute('data-project-id');
-      store.freezeProject(pid);
-      showToast('Proyecto enviado a The Freezer. Slot de foco liberado.', 'info');
+      if (projectToActivateId) {
+        store.swapProjects(pid, projectToActivateId);
+        showToast('¡Intercambio realizado! Proyecto activado en Modo Foco 🎯', 'success');
+      } else {
+        store.freezeProject(pid);
+        showToast('Proyecto enviado a The Freezer. Slot de foco liberado.', 'info');
+      }
       closeWipLimitModal();
       if (pendingActionCallback) {
         pendingActionCallback();

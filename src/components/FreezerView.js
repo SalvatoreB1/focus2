@@ -148,15 +148,9 @@ export function renderFreezerView(container, onNavigate, onEditProject) {
       const result = store.activateProject(pid);
 
       if (!result.success && result.reason === 'WIP_LIMIT_REACHED') {
-        // Open the hard limit rejection modal
         openWipLimitModal(() => {
-          // Callback if user resolved WIP by pausing another project
-          const retry = store.activateProject(pid);
-          if (retry.success) {
-            showToast('Proyecto promovido a Modo Foco 🎯', 'success');
-            onNavigate('focus');
-          }
-        });
+          onNavigate('focus');
+        }, pid);
       } else if (result.success) {
         showToast('¡Proyecto activado! Abriendo Modo Foco 🎯', 'success');
         onNavigate('focus');
