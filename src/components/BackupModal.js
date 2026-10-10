@@ -51,8 +51,12 @@ export function openBackupModal() {
   document.getElementById('btn-close-backup-modal').addEventListener('click', closeBackupModal);
 
   document.getElementById('btn-export-json').addEventListener('click', () => {
-    store.exportToJson();
-    showToast('Copia de seguridad JSON descargada con éxito 📥', 'success');
+    const result = store.exportToJson();
+    if (result?.source === 'native') {
+      showToast('Copia de seguridad guardada en Android 📥', 'success', 3500);
+    } else {
+      showToast('Copia de seguridad JSON descargada con éxito 📥', 'success');
+    }
   });
 
   document.getElementById('btn-copy-json').addEventListener('click', () => {
@@ -61,10 +65,10 @@ export function openBackupModal() {
       navigator.clipboard.writeText(raw).then(() => {
         showToast('¡JSON copiado al portapapeles! 📋 Guárdalo en tus notas', 'success', 3500);
       }).catch(() => {
-        prompt('Copia este texto JSON de respaldo:', raw);
+        window.prompt('Copia este texto JSON de respaldo:', raw);
       });
     } else {
-      prompt('Copia este texto JSON de respaldo:', raw);
+      window.prompt('Copia este texto JSON de respaldo:', raw);
     }
   });
 

@@ -95,11 +95,12 @@ window.addEventListener('error', (event) => {
   console.error('Unhandled app error:', event.error);
   const appContainer = document.getElementById('app');
   if (appContainer && (!appContainer.children || appContainer.children.length === 0)) {
-    // If screen is blank due to an error, attempt fallback render
+    // Never delete persisted data on a render failure. Just rehydrate safely.
     try {
-      localStorage.removeItem('FOCUS2_STATE_v1');
       initApp();
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Fallback app render failed:', e);
+    }
   }
 });
 

@@ -3,6 +3,31 @@ import { sounds } from './audio.js';
 
 const STORAGE_KEY = 'FOCUS2_STATE_v1';
 
+function writeNativePreference(value) {
+  if (typeof window === 'undefined') return;
+  try {
+    const prefs = window.Capacitor?.Plugins?.Preferences;
+    if (prefs && typeof prefs.set === 'function') {
+      prefs.set({ key: STORAGE_KEY, value: JSON.stringify(value) }).catch(() => {});
+    }
+  } catch (e) {
+    console.warn('Native preference write failed:', e);
+  }
+}
+
+function readNativePreference() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const prefs = window.Capacitor?.Plugins?.Preferences;
+    if (prefs && typeof prefs.get === 'function') {
+      return prefs.get({ key: STORAGE_KEY }).then((result) => result?.value || null).catch(() => null);
+    }
+  } catch (e) {
+    console.warn('Native preference read failed:', e);
+  }
+  return null;
+}
+
 const DEFAULT_MACRO_GOALS = [
   {
     id: 'goal-1',
@@ -184,11 +209,15 @@ class Store {
   }
 
   saveState(data = this.data) {
+    const payload = JSON.stringify(data);
+
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(STORAGE_KEY, payload);
     } catch (e) {
       console.error('Error saving state to localStorage:', e);
     }
+
+    writeNativePreference(data);
   }
 
   subscribe(listener) {
@@ -508,17 +537,44 @@ class Store {
 
   exportToJson() {
     const jsonStr = this.getExportJsonString();
+    const timestamp = new Date().toISOString().slice(0, 10);
+    const filename = `focus2_backup_${timestamp}.json`;
+
+    if (window.Capacitor?.isNativePlatform?.()) {
+      const nativeFs = window.Capacitor?.Plugins?.Filesystem;
+      if (nativeFs && typeof nativeFs.writeFile === 'function') {
+        nativeFs.writeFile({
+          path: filename,
+          data: jsonStr,
+          directory: 'DOCUMENTS',
+          encoding: 'utf8'
+        }).catch(() => {
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+        sounds.playClick();
+        return { success: true, source: 'native' };
+      }
+    }
+
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    const timestamp = new Date().toISOString().slice(0, 10);
     a.href = url;
-    a.download = `focus2_backup_${timestamp}.json`;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     sounds.playClick();
+    return { success: true, source: 'browser' };
   }
 
   importFromJson(jsonString) {

@@ -1520,7 +1520,7 @@ body {
   bottom: 84px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 90;
+  z-index: 200;
   display: flex;
   flex-direction: column;
   gap: 8px;
