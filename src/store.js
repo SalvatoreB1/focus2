@@ -495,7 +495,7 @@ class Store {
   }
 
   // --- Backup & Restore ---
-  exportToJson() {
+  getExportJsonString() {
     const exportData = {
       app: 'FOCUS2',
       exportDate: new Date().toISOString(),
@@ -503,7 +503,11 @@ class Store {
       macroGoals: this.data.macroGoals,
       projects: this.data.projects
     };
-    const jsonStr = JSON.stringify(exportData, null, 2);
+    return JSON.stringify(exportData, null, 2);
+  }
+
+  exportToJson() {
+    const jsonStr = this.getExportJsonString();
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
