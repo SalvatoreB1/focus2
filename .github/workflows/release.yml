@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -11,17 +12,53 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create Release with APK
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build web app
+        run: npm run build
+
+      - name: Sync Capacitor Android project
+        run: npx cap sync android
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Build APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Prepare APK asset
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk focus2-debug.apk
+
+      - name: Publish release with APK
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ github.ref_name }}" \
-            focus2-debug.apk \
-            --title "FOCUS2 ${{ github.ref_name }}" \
-            --notes "🚀 **FOCUS2 para Android**
+          TAG="${GITHUB_REF_NAME:-${{ github.ref_name }}}"
 
-            Descarga el archivo APK adjunto **focus2-debug.apk** para instalar la app en tu teléfono Android."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" focus2-debug.apk --clobber
+          else
+            gh release create "$TAG" focus2-debug.apk \
+              --title "FOCUS2 ${TAG}" \
+              --notes "🚀 **FOCUS2 para Android**
+
+              Se ha generado automaticamente una APK desde la versión ${TAG}.
+              Instálala en tu teléfono Android y prueba la corrección del arranque y de la copia de seguridad."
+          fi
