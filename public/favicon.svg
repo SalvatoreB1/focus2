@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="128" fill="#0b0f19"/>
+  <circle cx="256" cy="256" r="210" stroke="#1e293b" stroke-width="8"/>
+  <circle cx="256" cy="256" r="170" stroke="url(#paint0_linear)" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="120" stroke="url(#paint1_linear)" stroke-width="10" stroke-linecap="round"/>
+  <!-- Focus notches -->
+  <line x1="256" y1="56" x2="256" y2="106" stroke="#38bdf8" stroke-width="12" stroke-linecap="round"/>
+  <line x1="256" y1="406" x2="256" y2="456" stroke="#10b981" stroke-width="12" stroke-linecap="round"/>
+  <line x1="56" y1="256" x2="106" y2="256" stroke="#38bdf8" stroke-width="12" stroke-linecap="round"/>
+  <line x1="406" y1="256" x2="456" y2="256" stroke="#10b981" stroke-width="12" stroke-linecap="round"/>
+  <!-- Number 2 -->
+  <text x="256" y="320" font-family="system-ui, -apple-system, sans-serif" font-size="190" font-weight="900" fill="#ffffff" text-anchor="middle">2</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="86" y1="86" x2="426" y2="426" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear" x1="136" y1="136" x2="376" y2="376" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399"/>
+      <stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+</svg>
