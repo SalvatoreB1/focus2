@@ -39,10 +39,6 @@ export function renderHeader(container, onOpenProjectModal, onToggleWideMode, is
         <button class="icon-btn" id="btn-open-backup" title="Exportar / Importar Respaldo JSON">
           ${icons.download}
         </button>
-
-        <button class="btn-capture-submit header-add-btn" id="btn-header-add-project" title="Nuevo Proyecto">
-          ${icons.plus}
-        </button>
       </div>
     </header>
   `;
@@ -68,10 +64,5 @@ export function renderHeader(container, onOpenProjectModal, onToggleWideMode, is
     });
   }
 
-  const addProjectBtn = document.getElementById('btn-header-add-project');
-  if (addProjectBtn) {
-    addProjectBtn.addEventListener('click', () => {
-      onOpenProjectModal(null);
-    });
-  }
+
 }

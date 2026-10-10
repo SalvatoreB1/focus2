@@ -69,9 +69,6 @@ export function renderMacroGoalsView(container, onOpenGoalModal, onOpenProjectMo
 
               <div style="display:flex; justify-content:space-between; align-items:center; padding-top:4px;">
                 <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">${progress}% completado</span>
-                <button class="btn-inline-add" data-action="new-project-for-goal" data-goal-id="${goal.id}">
-                  ${icons.plus} Nuevo Proyecto
-                </button>
               </div>
             </div>
           `;
@@ -128,13 +125,6 @@ export function renderMacroGoalsView(container, onOpenGoalModal, onOpenProjectMo
         store.deleteMacroGoal(gid);
         showToast('Meta Macro eliminada', 'info');
       }
-    });
-  });
-
-  container.querySelectorAll('[data-action="new-project-for-goal"]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const gid = btn.getAttribute('data-goal-id');
-      onOpenProjectModal({ macroGoalId: gid });
     });
   });
 }
