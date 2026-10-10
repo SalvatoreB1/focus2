@@ -1,0 +1,27 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Release with APK
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            focus2-debug.apk \
+            --title "FOCUS2 ${{ github.ref_name }}" \
+            --notes "🚀 **FOCUS2 para Android**
+
+            Descarga el archivo APK adjunto **focus2-debug.apk** para instalar la app en tu teléfono Android."
