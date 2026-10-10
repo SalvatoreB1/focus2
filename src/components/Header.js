@@ -7,6 +7,7 @@ import { openApkModal } from './ApkModal.js';
 export function renderHeader(container, onOpenProjectModal, onToggleWideMode, isWideMode) {
   const activeCount = store.getActiveProjects().length;
   const isFull = activeCount >= 2;
+  const isNative = typeof window !== 'undefined' && (window.Capacitor?.isNativePlatform?.() || false);
 
   container.innerHTML = `
     <header class="top-nav">
@@ -20,43 +21,57 @@ export function renderHeader(container, onOpenProjectModal, onToggleWideMode, is
 
         <div class="wip-badge ${isFull ? 'full' : 'available'}" title="${isFull ? 'Límite de WIP alcanzado' : 'Slots de foco disponibles'}">
           <span class="wip-dot"></span>
-          ${activeCount}/2 Activos
+          <span class="wip-badge-text">${activeCount}/2 Activos</span>
         </div>
       </div>
 
       <div class="nav-actions">
-        <button class="icon-btn ${isWideMode ? 'active' : ''}" id="btn-toggle-wide" title="${isWideMode ? 'Vista Móvil Estrecha' : 'Vista Expandida'}">
+        <button class="icon-btn desktop-only ${isWideMode ? 'active' : ''}" id="btn-toggle-wide" title="${isWideMode ? 'Vista Móvil Estrecha' : 'Vista Expandida'}">
           ${icons.sparkles}
         </button>
+
+        ${!isNative ? `
+        <button class="icon-btn desktop-only" id="btn-open-apk" title="Instalar en Móvil / APK">
+          ${icons.android}
+        </button>
+        ` : ''}
 
         <button class="icon-btn" id="btn-open-backup" title="Exportar / Importar Respaldo JSON">
           ${icons.download}
         </button>
 
-        <button class="icon-btn" id="btn-open-apk" title="Instalar en Móvil / APK">
-          ${icons.android}
-        </button>
-
-        <button class="btn-capture-submit" id="btn-header-add-project" style="padding: 7px 12px; font-size: 0.8rem; margin-left: 2px;">
+        <button class="btn-capture-submit header-add-btn" id="btn-header-add-project" title="Nuevo Proyecto">
           ${icons.plus}
         </button>
       </div>
     </header>
   `;
 
-  document.getElementById('btn-toggle-wide').addEventListener('click', () => {
-    onToggleWideMode();
-  });
+  const toggleWideBtn = document.getElementById('btn-toggle-wide');
+  if (toggleWideBtn) {
+    toggleWideBtn.addEventListener('click', () => {
+      onToggleWideMode();
+    });
+  }
 
-  document.getElementById('btn-open-backup').addEventListener('click', () => {
-    openBackupModal();
-  });
+  const backupBtn = document.getElementById('btn-open-backup');
+  if (backupBtn) {
+    backupBtn.addEventListener('click', () => {
+      openBackupModal();
+    });
+  }
 
-  document.getElementById('btn-open-apk').addEventListener('click', () => {
-    openApkModal();
-  });
+  const apkBtn = document.getElementById('btn-open-apk');
+  if (apkBtn) {
+    apkBtn.addEventListener('click', () => {
+      openApkModal();
+    });
+  }
 
-  document.getElementById('btn-header-add-project').addEventListener('click', () => {
-    onOpenProjectModal(null);
-  });
+  const addProjectBtn = document.getElementById('btn-header-add-project');
+  if (addProjectBtn) {
+    addProjectBtn.addEventListener('click', () => {
+      onOpenProjectModal(null);
+    });
+  }
 }

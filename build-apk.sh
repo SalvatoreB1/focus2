@@ -23,8 +23,12 @@ echo "🚀 [4/4] Ensamblando archivo APK con Gradle..."
 cd android
 ./gradlew assembleDebug
 
+cd "$DIR"
+cp "$DIR/android/app/build/outputs/apk/debug/app-debug.apk" "$DIR/focus2-debug.apk"
+cp "$DIR/android/app/build/outputs/apk/debug/app-debug.apk" "$DIR/public/focus2-debug.apk"
+
 echo ""
 echo "================================================================================"
 echo "✅ ¡ÉXITO! Archivo APK generado exitosamente en:"
-echo "$DIR/android/app/build/outputs/apk/debug/app-debug.apk"
+echo "$DIR/focus2-debug.apk"
 echo "================================================================================"

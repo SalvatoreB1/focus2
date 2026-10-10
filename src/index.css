@@ -88,20 +88,23 @@ body {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(16, 22, 38, 0.88);
+  background: rgba(16, 22, 38, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
-  padding: calc(12px + var(--safe-top)) 18px 12px 18px;
+  padding: max(12px, calc(8px + var(--safe-top))) 16px 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .brand-section {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .brand-logo {
@@ -192,7 +195,20 @@ body {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.header-add-btn {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
 }
 
 .icon-btn {
@@ -207,6 +223,7 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .icon-btn:hover, .icon-btn:active {
@@ -225,7 +242,7 @@ body {
 .app-content {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 18px 100px 18px; /* space for bottom nav */
+  padding: 16px 16px max(115px, calc(95px + var(--safe-bottom))) 16px; /* space for elevated bottom nav */
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -239,14 +256,15 @@ body {
   transform: translateX(-50%);
   width: 100%;
   max-width: 520px;
-  background: rgba(16, 22, 38, 0.94);
+  background: rgba(16, 22, 38, 0.96);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-top: 1px solid var(--border-subtle);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 6px 10px calc(8px + var(--safe-bottom)) 10px;
+  padding: 8px 8px max(20px, calc(8px + var(--safe-bottom))) 8px;
   z-index: 45;
+  box-sizing: border-box;
 }
 
 .app-viewport.wide-mode .bottom-nav {
@@ -346,20 +364,37 @@ body {
 }
 
 .focus-mantra-bar {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.06) 0%, rgba(16, 185, 129, 0.04) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.15);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.2);
   border-radius: var(--radius-md);
   padding: 12px 14px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
+}
+
+.focus-mantra-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(56, 189, 248, 0.14);
+  color: var(--accent-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.focus-mantra-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .focus-mantra-text {
   font-size: 0.8rem;
   color: #94a3b8;
-  line-height: 1.35;
+  line-height: 1.4;
+  flex: 1;
 }
 
 .focus-mantra-text strong {
@@ -1379,6 +1414,19 @@ body {
 }
 
 /* Responsive tweaks */
+@media (max-width: 640px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .top-nav {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .brand-section {
+    gap: 8px;
+  }
+}
+
 @media (max-width: 480px) {
   .app-viewport {
     border-left: none;
@@ -1386,5 +1434,21 @@ body {
   }
   .slot-actions-row {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-logo-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.95rem;
+  }
+  .brand-logo {
+    font-size: 1.1rem;
+    gap: 6px;
+  }
+  .wip-badge {
+    padding: 3px 7px;
+    font-size: 0.65rem;
   }
 }

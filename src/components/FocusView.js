@@ -143,12 +143,11 @@ export function renderFocusView(container, onNavigate, onOpenProjectModal) {
   container.innerHTML = `
     <div class="focus-container">
       <div class="focus-mantra-bar">
+        <div class="focus-mantra-icon">
+          ${icons.zap}
+        </div>
         <div class="focus-mantra-text">
           <strong>Regla de WIP = 2:</strong> Prohibido empezar un tercer proyecto sin terminar o pausar uno de estos dos.
-        </div>
-        <div class="wip-badge ${activeProjects.length >= 2 ? 'full' : 'available'}">
-          <span class="wip-dot"></span>
-          ${activeProjects.length}/2 Activos
         </div>
       </div>
 
