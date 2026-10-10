@@ -79,10 +79,6 @@ export function renderFreezerView(container, onNavigate, onEditProject) {
           <h1 class="view-title">
             <span style="color:#7dd3fc;">❄️</span> The Freezer
           </h1>
-          <div class="wip-badge ${activeCount >= 2 ? 'full' : 'available'}">
-            <span class="wip-dot"></span>
-            ${activeCount}/2 Activos
-          </div>
         </div>
         <p class="view-subtitle">
           Caja de captura de ideas congeladas. Guarda ideas de proyectos sin tareas ni fechas para evitar que te distraigan del foco actual.
@@ -100,7 +96,7 @@ export function renderFreezerView(container, onNavigate, onEditProject) {
               type="text" 
               id="input-quick-idea" 
               class="capture-input" 
-              placeholder="Escribe una idea de proyecto futuro..." 
+              placeholder="Anotar idea de proyecto..." 
               autocomplete="off"
               required
             />
