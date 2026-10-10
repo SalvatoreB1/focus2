@@ -141,11 +141,37 @@ class Store {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed.projects) && Array.isArray(parsed.macroGoals)) {
+          // Normalize and migrate projects to guarantee valid arrays and fields
+          parsed.projects = parsed.projects.map((p) => {
+            if (!p || typeof p !== 'object') return null;
+            return {
+              ...p,
+              macroGoalId: p.macroGoalId || null,
+              title: p.title || 'Sin título',
+              description: p.description || '',
+              deadline: p.deadline || '',
+              status: ['active', 'frozen', 'completed'].includes(p.status) ? p.status : 'frozen',
+              nextActions: Array.isArray(p.nextActions)
+                ? p.nextActions
+                    .filter((a) => a && typeof a === 'object')
+                    .map((a) => ({
+                      id: a.id || 'act-' + Math.random().toString(36).substr(2, 6),
+                      text: typeof a.text === 'string' ? a.text : '',
+                      completed: Boolean(a.completed),
+                      createdAt: a.createdAt || new Date().toISOString()
+                    }))
+                : []
+            };
+          }).filter(Boolean);
+
+          parsed.macroGoals = parsed.macroGoals.filter((g) => g && typeof g === 'object' && g.id);
+
+          this.saveState(parsed);
           return parsed;
         }
       }
     } catch (e) {
-      console.warn('Error loading state from localStorage:', e);
+      console.warn('Error loading or migrating state from localStorage:', e);
     }
     // Return default seed data
     const initial = {

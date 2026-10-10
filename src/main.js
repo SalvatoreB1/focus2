@@ -80,8 +80,8 @@ function initApp() {
     render();
   });
 
-  // Register Service Worker for PWA & Offline
-  if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+  // Register Service Worker for PWA only when on HTTP/HTTPS web, avoiding file/capacitor scheme conflicts
+  if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').catch((err) => {
         console.warn('SW registration failed:', err);
@@ -89,6 +89,19 @@ function initApp() {
     });
   }
 }
+
+// Global error boundary to prevent black/blank screens
+window.addEventListener('error', (event) => {
+  console.error('Unhandled app error:', event.error);
+  const appContainer = document.getElementById('app');
+  if (appContainer && (!appContainer.children || appContainer.children.length === 0)) {
+    // If screen is blank due to an error, attempt fallback render
+    try {
+      localStorage.removeItem('FOCUS2_STATE_v1');
+      initApp();
+    } catch (e) {}
+  }
+});
 
 function setupNavigation() {
   const navButtons = document.querySelectorAll('.nav-item');
@@ -189,4 +202,8 @@ function render() {
   updateBadges();
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
