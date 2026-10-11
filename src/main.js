@@ -80,8 +80,14 @@ function initApp() {
     render();
   });
 
-  // Register Service Worker for PWA only when on HTTP/HTTPS web, avoiding file/capacitor scheme conflicts
-  if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+  // In Android/Capacitor environment, ensure no rogue service workers cache old bundles
+  if (window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (const reg of registrations) {
+        reg.unregister();
+      }
+    }).catch(() => {});
+  } else if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').catch((err) => {
         console.warn('SW registration failed:', err);
@@ -95,13 +101,16 @@ window.addEventListener('error', (event) => {
   console.error('Unhandled app error:', event.error);
   const appContainer = document.getElementById('app');
   if (appContainer && (!appContainer.children || appContainer.children.length === 0)) {
-    // Never delete persisted data on a render failure. Just rehydrate safely.
     try {
       initApp();
     } catch (e) {
       console.warn('Fallback app render failed:', e);
     }
   }
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
 });
 
 function setupNavigation() {

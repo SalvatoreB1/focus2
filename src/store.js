@@ -540,41 +540,53 @@ class Store {
     const timestamp = new Date().toISOString().slice(0, 10);
     const filename = `focus2_backup_${timestamp}.json`;
 
-    if (window.Capacitor?.isNativePlatform?.()) {
-      const nativeFs = window.Capacitor?.Plugins?.Filesystem;
-      if (nativeFs && typeof nativeFs.writeFile === 'function') {
-        nativeFs.writeFile({
-          path: filename,
-          data: jsonStr,
-          directory: 'DOCUMENTS',
-          encoding: 'utf8'
-        }).catch(() => {
-          const blob = new Blob([jsonStr], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        });
-        sounds.playClick();
-        return { success: true, source: 'native' };
+    // Try Web Share API (native share dialog in Android)
+    if (navigator.share && navigator.canShare) {
+      try {
+        const file = new File([jsonStr], filename, { type: 'application/json' });
+        if (navigator.canShare({ files: [file] })) {
+          navigator.share({
+            files: [file],
+            title: 'Respaldo FOCUS2',
+            text: 'Copia de seguridad de datos de FOCUS2'
+          }).catch(() => {});
+          sounds.playClick();
+          return { success: true, source: 'share' };
+        }
+      } catch (e) {
+        // Fallback to direct download
       }
     }
 
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    sounds.playClick();
-    return { success: true, source: 'browser' };
+    try {
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        if (a.parentNode) document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1000);
+      sounds.playClick();
+      return { success: true, source: 'browser' };
+    } catch (e) {
+      // Data URI fallback
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonStr);
+      const a = document.createElement('a');
+      a.href = dataUri;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        if (a.parentNode) document.body.removeChild(a);
+      }, 1000);
+      sounds.playClick();
+      return { success: true, source: 'browser' };
+    }
   }
 
   importFromJson(jsonString) {
