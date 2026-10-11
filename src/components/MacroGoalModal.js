@@ -60,11 +60,7 @@ export function openMacroGoalModal(goalData = null) {
           </select>
         </div>
 
-        <div id="goal-period-options-row" style="display:flex; gap:6px;">
-          <button type="button" class="btn-period-pill active" data-val="Q4">Q4 (Oct-Dic)</button>
-          <button type="button" class="btn-period-pill" data-val="Q1">Q1 (Ene-Mar)</button>
-          <button type="button" class="btn-period-pill" data-val="Q2">Q2 (Abr-Jun)</button>
-          <button type="button" class="btn-period-pill" data-val="Q3">Q3 (Jul-Sep)</button>
+        <div id="goal-period-options-row" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
         </div>
 
         <input 
@@ -146,11 +142,13 @@ export function openMacroGoalModal(goalData = null) {
     optionsRow.innerHTML = '';
 
     if (pType === 'quarter') {
+      optionsRow.style.display = 'grid';
+      optionsRow.style.gridTemplateColumns = 'repeat(2, 1fr)';
       const qOptions = [
-        { id: 'Q1', label: 'Q1 (Ene-Mar)' },
-        { id: 'Q2', label: 'Q2 (Abr-Jun)' },
-        { id: 'Q3', label: 'Q3 (Jul-Sep)' },
-        { id: 'Q4', label: 'Q4 (Oct-Dic)' }
+        { id: 'Q1', label: 'Q1 (Ene - Mar)' },
+        { id: 'Q2', label: 'Q2 (Abr - Jun)' },
+        { id: 'Q3', label: 'Q3 (Jul - Sep)' },
+        { id: 'Q4', label: 'Q4 (Oct - Dic)' }
       ];
       if (!['Q1', 'Q2', 'Q3', 'Q4'].includes(currentSubPeriod)) currentSubPeriod = 'Q4';
 
@@ -168,6 +166,8 @@ export function openMacroGoalModal(goalData = null) {
         optionsRow.appendChild(btn);
       });
     } else if (pType === 'semester') {
+      optionsRow.style.display = 'grid';
+      optionsRow.style.gridTemplateColumns = 'repeat(2, 1fr)';
       const hOptions = [
         { id: 'H1', label: 'H1 (1er Semestre)' },
         { id: 'H2', label: 'H2 (2do Semestre)' }
@@ -188,10 +188,12 @@ export function openMacroGoalModal(goalData = null) {
         optionsRow.appendChild(btn);
       });
     } else if (pType === 'annual') {
-      optionsRow.innerHTML = `<span style="font-size:0.75rem; color:var(--text-secondary);">Todo el ciclo del año fiscal seleccionado</span>`;
+      optionsRow.style.display = 'block';
+      optionsRow.innerHTML = `<div style="font-size:0.75rem; color:var(--text-secondary); text-align:center; padding:6px; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px dashed var(--border-subtle);">Todo el ciclo del año fiscal seleccionado</div>`;
     } else if (pType === 'custom') {
+      optionsRow.style.display = 'block';
       optionsRow.innerHTML = `
-        <input type="text" id="custom-period-text" class="form-input" style="padding:6px 10px; font-size:0.8rem;" placeholder="Escribe tu rango (ej: Nov 2026 - Feb 2027)" value="${escapeHtml(currentSubPeriod)}" />
+        <input type="text" id="custom-period-text" class="form-input" style="padding:8px 12px; font-size:0.85rem;" placeholder="Escribe tu rango (ej: Nov 2026 - Feb 2027)" value="${escapeHtml(currentSubPeriod)}" />
       `;
       const custInput = optionsRow.querySelector('#custom-period-text');
       custInput.addEventListener('input', (e) => {

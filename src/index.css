@@ -1006,17 +1006,25 @@ body {
   background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   color: #ffffff;
   border: none;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  padding: 0 12px;
+  padding: 0 16px;
+  height: 44px;
   border-radius: var(--radius-md);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  gap: 6px;
   cursor: pointer;
   flex-shrink: 0;
   white-space: nowrap;
+  box-sizing: border-box;
   transition: all 0.2s;
+}
+
+.btn-capture-submit svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 .btn-capture-submit:hover {
@@ -1195,6 +1203,49 @@ body {
   flex-direction: column;
   gap: 10px;
   opacity: 0.92;
+}
+
+.archive-card-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-archive-uncomplete {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  height: 32px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.btn-archive-uncomplete:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  border-color: var(--border-medium);
+}
+
+.archive-card-actions-row .icon-subaction {
+  height: 32px;
+  width: 32px;
+  box-sizing: border-box;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .archive-card-header {
@@ -1518,16 +1569,19 @@ body {
 }
 
 .btn-period-pill {
-  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
   background: #0d1527;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  padding: 8px 4px;
+  padding: 8px 10px;
   cursor: pointer;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
   white-space: nowrap;
 }

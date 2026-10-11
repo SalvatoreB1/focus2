@@ -97,9 +97,9 @@ export function renderArchiveView(container, onNavigate) {
                 </div>
               </details>
 
-              <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.04);">
-                <button class="btn-cancel" style="padding:4px 8px; font-size:0.75rem;" data-action="uncomplete-to-freezer" data-project-id="${p.id}">
-                  ${icons.snowflake} Mover a Freezer
+              <div class="archive-card-actions-row">
+                <button class="btn-archive-uncomplete" data-action="uncomplete-to-freezer" data-project-id="${p.id}">
+                  ${icons.snowflake} <span>Mover a Freezer</span>
                 </button>
                 <button class="icon-subaction delete" data-action="delete-archived" data-project-id="${p.id}" title="Eliminar definitivamente">
                   ${icons.trash}
