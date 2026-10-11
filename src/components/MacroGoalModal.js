@@ -53,10 +53,9 @@ export function openMacroGoalModal(goalData = null) {
             <option value="custom">Personalizado</option>
           </select>
           <select id="goal-select-year" class="form-select">
-            <option value="2026" selected>Año 2026</option>
-            <option value="2027">Año 2027</option>
-            <option value="2028">Año 2028</option>
-            <option value="2025">Año 2025</option>
+            ${[2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035]
+              .map((y) => `<option value="${y}" ${y === (isEditing && currentGoal.quarter?.match(/20\d\d/)?.[0] ? parseInt(currentGoal.quarter.match(/20\d\d/)[0]) : 2026) ? 'selected' : ''}>Año ${y}</option>`)
+              .join('')}
           </select>
         </div>
 

@@ -11,13 +11,13 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // Hide browser scrollbars in Android WebView
+        // Hide scrollbar track without blocking vertical scrolling
         try {
             WebView webView = getBridge().getWebView();
             if (webView != null) {
                 webView.setVerticalScrollBarEnabled(false);
                 webView.setHorizontalScrollBarEnabled(false);
-                webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+                webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
             }
         } catch (Exception ignored) {}
     }
