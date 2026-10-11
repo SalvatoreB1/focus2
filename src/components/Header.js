@@ -12,8 +12,8 @@ export function renderHeader(container, onOpenProjectModal, onToggleWideMode, is
   container.innerHTML = `
     <header class="top-nav">
       <div class="brand-section">
-        <div class="brand-logo" id="brand-logo-btn" style="cursor:pointer;">
-          <div class="brand-logo-icon">2</div>
+        <div class="brand-logo" id="brand-logo-btn" style="cursor:pointer;" title="Ir al Modo Foco">
+          <div class="brand-logo-icon">${icons.target}</div>
           <div class="brand-title">
             FOCUS<span>2</span>
           </div>

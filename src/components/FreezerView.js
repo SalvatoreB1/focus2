@@ -96,7 +96,7 @@ export function renderFreezerView(container, onNavigate, onEditProject) {
               type="text" 
               id="input-quick-idea" 
               class="capture-input" 
-              placeholder="Anotar idea de proyecto..." 
+              placeholder="Nueva idea o proyecto..." 
               autocomplete="off"
               required
             />
