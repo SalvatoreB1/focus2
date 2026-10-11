@@ -12,57 +12,21 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build web app
-        run: npm run build
-
-      - name: Sync Capacitor Android project
-        run: npx cap sync android
-
-      - name: Set up Java JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: 'gradle'
-
-      - name: Make gradlew executable
-        working-directory: android
-        run: chmod +x ./gradlew
-
-      - name: Build APK
-        working-directory: android
-        run: ./gradlew assembleDebug
-
-      - name: Prepare APK asset
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk focus2-debug.apk
-
-      - name: Publish release with APK
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: focus2-debug.apk
-          name: FOCUS2 ${{ github.ref_name }}
-          body: |
-            🚀 **FOCUS2 para Android** (${{ github.ref_name }})
-            
-            - Corregido el solapamiento de notificaciones (Toasts ahora en cabecera con z-index 9999).
-            - Exportación nativa de copias de seguridad JSON mediante diálogo de compartir de Android.
-            - Eliminado el caché conflictivo de Service Workers para prevenir pantallas vacías en actualizaciones.
-          draft: false
-          prerelease: false
+      - name: Create Release with APK
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME:-${{ github.ref_name }}}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" focus2-debug.apk --clobber
+          else
+            gh release create "$TAG" focus2-debug.apk \
+              --title "FOCUS2 ${TAG}" \
+              --notes "🚀 **FOCUS2 para Android (${TAG})**
+
+              Descarga el archivo APK adjunto **focus2-debug.apk** para instalar o actualizar la app en tu teléfono Android."
+          fi
