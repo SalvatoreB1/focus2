@@ -37,11 +37,6 @@ android/.idea/
 android/*.iml
 android/app/*.iml
 
-# APK build artifacts
-*.apk
-public/*.apk
-focus2-debug.apk
-
 # Environment variables
 .env
 .env.*

@@ -39,6 +39,10 @@ jobs:
           java-version: '21'
           cache: 'gradle'
 
+      - name: Make gradlew executable
+        working-directory: android
+        run: chmod +x ./gradlew
+
       - name: Build APK
         working-directory: android
         run: ./gradlew assembleDebug
